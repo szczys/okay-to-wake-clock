@@ -22,6 +22,8 @@ int DAY_TIME[2] = { 7, 30 };
 
 //How many minutes to leave WiFi on after power-up for purposes of over-the-air-updates
 int MINUTES_BEFORE_WIFI_SHUTOFF = 10;
+//LED Brightness (0-255)
+int BRIGHT_LEVEL = 255;
 
 
 /*
@@ -88,7 +90,7 @@ void setup() {
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   for (uint8_t i=0; i<LED_COUNT; i++) strip.setPixelColor(i,0);
   strip.show();            // Turn OFF all pixels ASAP
-  strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+  strip.setBrightness(BRIGHT_LEVEL); // Set BRIGHTNESS to about 1/5 (max = 255)
 
   // We start by connecting to a WiFi network
 

@@ -3,7 +3,7 @@
 An ESP8266-based light clock using WS2812 LEDs for:
 
 * Red during sleep time (overnight)
-* Yellow when wake time is approaching
+* Blue when wake time is approaching
 * Green when it's time to get up
 * Off during the day
 

@@ -51,10 +51,10 @@ int BRIGHT_LEVEL = 255;
 #define WAKE  3
 
 const uint32_t state_colors[4] = {
-  ((uint32_t)0x00 << 16) | ((uint32_t)0x00 <<  8) | 0x00,
-  ((uint32_t)0xFF << 16) | ((uint32_t)0x00 <<  8) | 0x00,
-  ((uint32_t)0xFF << 16) | ((uint32_t)0xFF <<  8) | 0x00,
-  ((uint32_t)0x00 << 16) | ((uint32_t)0xFF <<  8) | 0x00
+  ((uint32_t)0x00 << 16) | ((uint32_t)0x00 <<  8) | 0x00, //Daytime color
+  ((uint32_t)0xFF << 16) | ((uint32_t)0x00 <<  8) | 0x00, //Sleep color
+  ((uint32_t)0x00 << 16) | ((uint32_t)0x00 <<  8) | 0xFF, //Doze color
+  ((uint32_t)0x00 << 16) | ((uint32_t)0xFF <<  8) | 0x00  //Wake color
 };
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);

@@ -7,6 +7,8 @@ An ESP8266-based light clock using WS2812 LEDs for:
 * Green when it's time to get up
 * Off during the day
 
+Project log: https://hackaday.io/project/171671-improved-okay-to-wake-clock
+
 ## Implementation
 
 This uses OTA updates so that it can be install inside of an existing okay to wake clock (robust case acts as diffuser, power suppy, all out of sight)

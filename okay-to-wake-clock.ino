@@ -50,11 +50,12 @@ int BRIGHT_LEVEL = 255;
 #define DOZE  2
 #define WAKE  3
 
-const uint32_t state_colors[4] = {
+const uint32_t state_colors[5] = {
   ((uint32_t)0x00 << 16) | ((uint32_t)0x00 <<  8) | 0x00, //Daytime color
   ((uint32_t)0xFF << 16) | ((uint32_t)0x00 <<  8) | 0x00, //Sleep color
   ((uint32_t)0x00 << 16) | ((uint32_t)0x00 <<  8) | 0xFF, //Doze color
-  ((uint32_t)0x00 << 16) | ((uint32_t)0xFF <<  8) | 0x00  //Wake color
+  ((uint32_t)0x00 << 16) | ((uint32_t)0xFF <<  8) | 0x00, //Wake color
+  ((uint32_t)0x52 << 16) | ((uint32_t)0x52 <<  8) | 0x52  //Boot color
 };
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
@@ -87,8 +88,9 @@ TimeChangeRule *tcr;        // pointer to the time change rule, use to get TZ ab
 void setup() {
   Serial.begin(115200);
   
+  
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  for (uint8_t i=0; i<LED_COUNT; i++) strip.setPixelColor(i,0);
+  for (uint8_t i=0; i<LED_COUNT; i++) strip.setPixelColor(i,state_colors[4]);
   strip.show();            // Turn OFF all pixels ASAP
   strip.setBrightness(BRIGHT_LEVEL); // Set BRIGHTNESS to about 1/5 (max = 255)
 

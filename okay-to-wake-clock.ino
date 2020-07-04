@@ -12,10 +12,14 @@
     * Turns of LEDs at 7:30am
     * Time is set via NTP at power-up
     * OTA updates are available for 10 minutes after powerup at which point WiFi is shut off for power savings
+
+    Programming Settings:
+    Board: Adafruit Feather Huzzah ESP8266
+    Port: esp8266-fea3d4 at 192.168.1.###
 */
 
 /* User timer settings: { hours, minutes } */
-int SLEEP_TIME[2] = { 19, 00 };
+int SLEEP_TIME[2] = { 18, 45 };
 int DOZE_TIME[2] = { 5, 30 };
 int WAKE_TIME[2] = { 6, 30 };
 int DAY_TIME[2] = { 7, 30 };

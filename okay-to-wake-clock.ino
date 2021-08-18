@@ -18,9 +18,15 @@
     Port: esp8266-fea3d4 at 192.168.1.###
 */
 
+/* Set these WiFi details (SSID and password) in the credentials.h file so they don't get included in the git repo:
+*     Access point #1: STASSID1, STAPSK1
+*     Access point #2: STASSID2, STAPSK2
+*/
+
+
 /* User timer settings: { hours, minutes } */
 int SLEEP_TIME[2] = { 18, 45 };
-int DOZE_TIME[2] = { 5, 30 };
+int DOZE_TIME[2] = { 6, 00 };
 int WAKE_TIME[2] = { 6, 30 };
 int DAY_TIME[2] = { 7, 30 };
 
@@ -64,10 +70,6 @@ const uint32_t state_colors[5] = {
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-/* Set these WiFi details in the credentials.h file so they don't get included in the git repo */
-const char* ssid     = STASSID;
-const char* password = STAPSK;
-
 const char* host = "https://hackaday.com";
 const uint16_t port = 80;
 
@@ -83,11 +85,17 @@ WiFiUDP udp;
 
 //Timezone stuff for central time
 //https://github.com/JChristensen/Timezone/blob/master/examples/Clock/Clock.ino
-// US Eastern Time Zone (New York, Detroit)
-TimeChangeRule myDST = {"CDT", Second, Sun, Mar, 2, -300};    // Daylight time = UTC - 5 hours
-TimeChangeRule mySTD = {"DST", First, Sun, Nov, 2, -360};     // Standard time = UTC - 6 hours
-Timezone myTZ(myDST, mySTD);
+
+TimeChangeRule CENTRAL_DST = {"CDT", Second, Sun, Mar, 2, -300};    // Daylight time = UTC - 5 hours
+TimeChangeRule CENTRAL_STD = {"CST", First, Sun, Nov, 2, -360};     // Standard time = UTC - 6 hours
+TimeChangeRule EASTERN_DST = {"EDT", Second, Sun, Mar, 2, -240};    // Daylight time = UTC - 5 hours
+TimeChangeRule EASTERN_STD = {"EST", First, Sun, Nov, 2, -300};     // Standard time = UTC - 6 hours
+TimeChangeRule PACIFIC_DST = {"EDT", Second, Sun, Mar, 2, -420};    // Daylight time = UTC - 5 hours
+TimeChangeRule PACIFIC_STD = {"EST", First, Sun, Nov, 2, -480};     // Standard time = UTC - 6 hours
+Timezone myTZ(CENTRAL_DST,CENTRAL_STD);
 TimeChangeRule *tcr;        // pointer to the time change rule, use to get TZ abbrev
+
+uint8_t connected_ap = 255; // Set based on what AP this connects to. Used to set correct timezone
 
 void setup() {
   Serial.begin(115200);
@@ -102,18 +110,52 @@ void setup() {
 
   Serial.println();
   Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
 
   /* Explicitly set the ESP8266 to be a WiFi-client, otherwise, it by default,
      would try to act as both a client and an access-point and could cause
      network-issues with your other WiFi-devices on your WiFi-network. */
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  uint8_t connection_count = 0;
+  while (connected_ap == 255) {
+    // Loop through two different sets of AP credentials until we get connected to one
+    if (connected_ap == 255) {
+      WiFi.disconnect();
+      connection_count = 0;
+      Serial.print("\nConnecting to ");
+      Serial.println(STASSID1);
+      WiFi.begin(STASSID1, STAPSK1);
+      
+      while (++connection_count < 20) {
+        if (WiFi.status() == WL_CONNECTED) {
+          connected_ap = 1;
+          break;
+        }
+        else {
+          delay(500);
+          Serial.print(".");
+        }
+      }
+    }
+
+    if (connected_ap == 255) {
+      WiFi.disconnect();
+      connection_count = 0;
+      Serial.print("\nConnecting to ");
+      Serial.println(STASSID2);
+      WiFi.begin(STASSID2, STAPSK2);
+      
+      while (++connection_count < 20) {
+        if (WiFi.status() == WL_CONNECTED) {
+          connected_ap = 2;
+          break;
+        }
+        else {
+          delay(500);
+          Serial.print(".");
+        }
+      }
+    }
   }
 
   Serial.println("");
@@ -126,6 +168,8 @@ void setup() {
   Serial.print("Local port: ");
   Serial.println(udp.localPort());
 
+  // The second AP is in the Eastern time zone (for visiting family)
+  if (connected_ap == 2) myTZ.setRules(EASTERN_DST,EASTERN_STD);
   setTime(myTZ.toUTC(compileTime()));
 
   ArduinoOTA.onStart([]() {

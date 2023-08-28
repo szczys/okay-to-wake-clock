@@ -1,3 +1,7 @@
+# Deprecated
+
+Active development has migrated this to a PlatformIO-based development environment. Please see the [Okay to Wake Clock 2 repo](https://github.com/szczys/okay-to-wake-clock-2).
+
 # Okay to Wake Clock
 
 An ESP8266-based light clock using WS2812 LEDs for:
